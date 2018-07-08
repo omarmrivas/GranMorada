@@ -27,6 +27,7 @@ let execute exe =
 
 [<EntryPoint>]
 let main argv = 
+    let path = argv.[0]
     let ipaddress = getLocalIPAddress()
     printfn "Mounting server on: %s" ipaddress
     let cts = new CancellationTokenSource()
@@ -34,26 +35,27 @@ let main argv =
                                     bindings = [ HttpBinding.create HTTP IPAddress.Loopback 80us
                                                  HttpBinding.createSimple HTTP ipaddress 80
                                                ] }
-    let valid str =
-        match str with
-        | "1" -> printfn "Activating 1"
-                 let res = execute "activate1.sh"
-                 printfn "Result: %A" res
-                 OK str
-        | "2" -> printfn "Activating 2"
-                 let res = execute "activate2.sh"
-                 printfn "Result: %A" res
-                 OK str
-        | _ -> OK (sprintf "Error: %s" str)
+    let valid (door, phone) =
+        match door with
+        | "enter" -> printfn "Activating entrance doors for phone %s" phone
+                     let res = execute (path + "/activate1.sh")
+                     printfn "Result: %A" res
+                     OK "Activating entrance doors."
+        | "exit" -> printfn "Activating exit doors for phone %s" phone
+                    let res = execute (path + "/activate2.sh")
+                    printfn "Result: %A" res
+                    OK "Activating exit doors."
+        | _ -> OK (sprintf "Error: %s - %s" door phone)
     let app = choose [
-                GET >=> pathScan "/%s" valid
+                GET >=> pathScan "/%s/%s" valid
               ]
-    let listening, server = startWebServerAsync conf app
+    startWebServer conf app
+//    let listening, server = startWebServerAsync conf app
 
-    Async.Start(server, cts.Token)
+(*    Async.Start(server, cts.Token)
     printfn "Make requests now"
     Console.ReadKey true |> ignore
 
-    cts.Cancel()
+    cts.Cancel()*)
 
     0    

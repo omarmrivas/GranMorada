@@ -56,6 +56,7 @@
     <None Include="activate2.sh">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="GranMorada.service" />
   </ItemGroup>
   <Import Project="$(FSharpTargetsPath)" />
 </Project>
