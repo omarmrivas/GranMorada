@@ -1,10 +1,14 @@
-﻿[Unit]
+[Unit]
 Description=Start GranMorada Service
-After=multi-user.target
+After=network.target
 
 [Service]
-Type=idle
-ExecStart=/usr/bin/sudo /usr/bin/mono /home/pi/Documents/GranMorada/GranMorada/bin/Debug/GranMorada.exe /home/pi/Documents/GranMorada/GranMorada/bin/Debug > /home/pi/GranMorada.log 2>&1
+ExecStart=/usr/bin/sudo /usr/bin/mono /home/pi/Documents/GranMorada/GranMorada/bin/Release/GranMorada.exe /home/pi/Documents/GranMorada/GranMorada/bin/Release > /home/pi/GranMorada.log 2>&1
+WorkingDirectory=/home/pi/Documents/GranMorada/GranMorada/bin/Release
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=pi
 
 [Install]
 WantedBy=multi-user.target
